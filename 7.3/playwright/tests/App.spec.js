@@ -1,22 +1,37 @@
 const { test, expect } = require("@playwright/test");
+const { email, password } = require("../user.js");
 
-test("test", async ({ page }) => {
-  // Go to https://netology.ru/free/management#/
-  await page.goto("https://netology.ru/free/management#/");
-
-  // Click a
-  await page.click("a");
-  await expect(page).toHaveURL("https://netology.ru/");
-
-  // Click text=Учиться бесплатно
-  await page.click("text=Учиться бесплатно");
-  await expect(page).toHaveURL("https://netology.ru/free");
-
-  page.click("text=Бизнес и управление");
-
-  // Click text=Как перенести своё дело в онлайн
-  await page.click("text=Как перенести своё дело в онлайн");
-  await expect(page).toHaveURL(
-    "https://netology.ru/programs/kak-perenesti-svoyo-delo-v-onlajn-bp"
-  );
+test("Login netology.ru valid user", async ({ page }) => {
+  await page.goto("http://netology.ru");
+  await page.waitForTimeout(1000);
+  await page.screenshot({ path: "screenshots/screenshot_1.1.png" });
+  await page.click("text=Войти");
+  await page.waitForTimeout(1000);
+  await page.screenshot({ path: "screenshots/screenshot_1.2.png" });
+  await page.click('[placeholder="Email"]');
+  await page.fill('[placeholder="Email"]', email);
+  await page.click('[placeholder="Пароль"]');
+  await page.fill('[placeholder="Пароль"]', password);
+  await page.click('[data-testid="login-submit-btn"]');
+  const title = page.getByText("Моё обучение");
+  await expect(title).toBeVisible();
+  await page.waitForTimeout(2000);
+  await page.screenshot({ path: "screenshots/screenshot_1.3.png" });
+});
+test("Login netology.ru invalid user", async ({ page }) => {
+  await page.goto("http://netology.ru");
+  await page.waitForTimeout(1000);
+  await page.screenshot({ path: "screenshots/screenshot_2.1.png" });
+  await page.click("text=Войти");
+  await page.waitForTimeout(1000);
+  await page.screenshot({ path: "screenshots/screenshot_2.2.png" });
+  await page.click('[placeholder="Email"]');
+  await page.fill('[placeholder="Email"]', "email@mail.ru");
+  await page.click('[placeholder="Пароль"]');
+  await page.fill('[placeholder="Пароль"]', "password");
+  await page.click('[data-testid="login-submit-btn"]');
+  const error = page.getByTestId("login-error-hint");
+  await expect(error).toBeVisible();
+  await page.waitForTimeout(1000);
+  await page.screenshot({ path: "screenshots/screenshot_2.3.png" });
 });
