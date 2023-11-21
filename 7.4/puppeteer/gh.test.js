@@ -1,13 +1,16 @@
 let page;
 
+beforeEach(async () => {
+  page = await browser.newPage();
+});
+
 afterEach(() => {
   page.close();
 });
 
 describe("Github page tests", () => {
   beforeEach(async () => {
-    page = await browser.newPage();
-    await page.goto("https://github.com/team");
+    await page.goto("https://github.com/team", { timeout: 60000 });
   });
   
   test("The h1 header content", async () => {
@@ -36,19 +39,15 @@ describe("Github page tests", () => {
   });
 });
 
-beforeEach(async () => {
-  page = await browser.newPage();
-});
-
 test("Title on the sing up page", async () => {
-  await page.goto("https://github.com/join?plan=free&ref_cta=Sign%2520up%2520for%2520free&ref_loc=team-page-hero&ref_page=%2Fteam&setup_organization=true&source=team");
+  await page.goto("https://github.com/join?plan=free&ref_cta=Sign%2520up%2520for%2520free&ref_loc=team-page-hero&ref_page=%2Fteam&setup_organization=true&source=team", { timeout: 60000 });
   await page.waitForTimeout(1000);
   const title = await page.title();
   expect(title).toEqual("Join GitHub · GitHub");
 });
 
 test("Title on Compar all plans page", async () => {
-  await page.goto("https://github.com/pricing");
+  await page.goto("https://github.com/pricing", { timeout: 60000 });
   await page.waitForTimeout(1000);
   const titleObj = await page.$('.h2-mktg');
   const title = await page.evaluate(el => el.textContent, titleObj);
@@ -56,7 +55,7 @@ test("Title on Compar all plans page", async () => {
 });
 
 test("Title on GitHub Enterprise page", async () => {
-  await page.goto("https://github.com/enterprise");
+  await page.goto("https://github.com/enterprise", { timeout: 60000 });
   await page.waitForTimeout(1000);
   const titleObj = await page.$('#hero-section-brand-heading');
   const title = await page.evaluate(el => el.textContent, titleObj);
